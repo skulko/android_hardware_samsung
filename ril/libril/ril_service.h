@@ -701,6 +701,34 @@ int modemResetInd(int slotId,
                   int indicationType, int token, RIL_Errno e, void *response,
                   size_t responselen);
 
+int stkSendSMSResultInd(int slotId,
+                  int indicationType, int token, RIL_Errno e, void *response,
+                  size_t responselen);
+
+int amInd(int slotId,
+                  int indicationType, int token, RIL_Errno e, void *response,
+                  size_t responselen);
+
+int dataSuspenResumeInd(int slotId,
+                  int indicationType, int token, RIL_Errno e, void *response,
+                  size_t responselen);
+
+int wbAMRStateInd(int slotId,
+                  int indicationType, int token, RIL_Errno e, void *response,
+                  size_t responselen);
+
+int twoMicStateInd(int slotId,
+                  int indicationType, int token, RIL_Errno e, void *response,
+                  size_t responselen);
+
+int wbAMRReportInd(int slotId,
+                  int indicationType, int token, RIL_Errno e, void *response,
+                  size_t responselen);
+
+int sndMgrClockCtrlInd(int slotId,
+                  int indicationType, int token, RIL_Errno e, void *response,
+                  size_t responselen);
+
 int sendRequestRawResponse(int slotId,
                            int responseType, int serial, RIL_Errno e,
                            void *response, size_t responseLen);

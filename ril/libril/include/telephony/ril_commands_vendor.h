@@ -14,7 +14,7 @@
 ** See the License for the specific language governing permissions and
 ** limitations under the License.
 */
-    {RIL_OEM_REQUEST_BASE, NULL}, // RIL_OEM_REQUEST_BASE should be defined as 10000 in ril.h
+    {10000, NULL},
     {10001, NULL},
     {RIL_REQUEST_GET_CELL_BROADCAST_CONFIG, NULL},
     {10003, NULL},
@@ -30,7 +30,7 @@
     {RIL_REQUEST_USIM_PB_CAPA, NULL},
     {RIL_REQUEST_LOCK_INFO, NULL},
     {10015, NULL},
-    {RIL_REQUEST_DIAL_EMERGENCY, NULL},
+    {RIL_REQUEST_DIAL_EMERGENCY, radio::dialResponse},
     {RIL_REQUEST_GET_STOREAD_MSG_COUNT, NULL},
     {RIL_REQUEST_STK_SIM_INIT_EVENT, NULL},
     {RIL_REQUEST_GET_LINE_ID, NULL},

@@ -108,6 +108,9 @@ extern "C"
 char ril_service_name_base[MAX_SERVICE_NAME_LENGTH] = RIL_SERVICE_NAME_BASE;
 extern "C"
 char ril_service_name[MAX_SERVICE_NAME_LENGTH] = RIL1_SERVICE_NAME;
+
+#define RIL_VENDOR_COMMANDS_OFFSET 10000
+
 /*******************************************************************/
 
 RIL_RadioFunctions s_callbacks = {0, NULL, NULL, NULL, NULL, NULL};
@@ -258,18 +261,6 @@ addRequestToList(int serial, int slotId, int request) {
 #endif
 #endif
 
-    CommandInfo *pCI = NULL;
-    if (request > RIL_OEM_REQUEST_BASE) {
-        int index = request - RIL_OEM_REQUEST_BASE;
-        RLOGD("processCommandBuffer: samsung request=%d, index=%d",
-                request, index);
-        if (index < (int32_t)NUM_ELEMS(s_commands_v))
-            pCI = &(s_commands_v[index]);
-    } else {
-        if (request < (int32_t)NUM_ELEMS(s_commands))
-            pCI = &(s_commands[request]);
-    }
-
     pRI = (RequestInfo *)calloc(1, sizeof(RequestInfo));
     if (pRI == NULL) {
         RLOGE("Memory allocation failed for request %s", requestToString(request));
@@ -277,7 +268,10 @@ addRequestToList(int serial, int slotId, int request) {
     }
 
     pRI->token = serial;
-    pRI->pCI = pCI;
+    pRI->pCI = (request > RIL_VENDOR_COMMANDS_OFFSET) /* Hack to include Samsung requests */
+        ? &(s_commands_v[request - RIL_VENDOR_COMMANDS_OFFSET])
+        : &(s_commands[request]);
+
     pRI->socket_id = socket_id;
 
     ret = pthread_mutex_lock(pendingRequestsMutexHook);
@@ -492,7 +486,7 @@ RIL_register (const RIL_RadioFunctions *callbacks) {
     }
 
     for (int i = 0; i < (int)NUM_ELEMS(s_commands_v); i++) {
-        assert(i + RIL_OEM_REQUEST_BASE == s_commands[i].requestNumber);
+        assert(i + RIL_VENDOR_COMMANDS_OFFSET == s_commands[i].requestNumber);
     }
 
     for (int i = 0; i < (int)NUM_ELEMS(s_unsolResponses); i++) {
@@ -501,7 +495,7 @@ RIL_register (const RIL_RadioFunctions *callbacks) {
     }
 
     for (int i = 0; i < (int)NUM_ELEMS(s_unsolResponses_v); i++) {
-        assert(i + SAMSUNG_UNSOL_RESPONSE_BASE
+        assert(i + RIL_UNSOL_RESPONSE_BASE + RIL_VENDOR_COMMANDS_OFFSET
                 == s_unsolResponses[i].requestNumber);
     }
 
@@ -785,6 +779,7 @@ void RIL_onUnsolicitedResponse(int unsolResponse, const void *data,
     RIL_SOCKET_ID soc_id = RIL_SOCKET_1;
     UnsolResponseInfo *pRI = NULL;
     int32_t pRI_elements;
+
 #if defined(ANDROID_MULTI_SIM)
     soc_id = socket_id;
 #endif
@@ -801,7 +796,7 @@ void RIL_onUnsolicitedResponse(int unsolResponse, const void *data,
     pRI_elements = (int32_t)NUM_ELEMS(s_unsolResponses);
 
     /* Hack to include Samsung responses */
-    if (unsolResponse > SAMSUNG_UNSOL_RESPONSE_BASE) {
+    if (unsolResponse > RIL_VENDOR_COMMANDS_OFFSET + RIL_UNSOL_RESPONSE_BASE) {
         pRI = s_unsolResponses_v;
         pRI_elements = (int32_t)NUM_ELEMS(s_unsolResponses_v);
 
