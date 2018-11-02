@@ -116,13 +116,9 @@ static int s_registerCalled = 0;
 static pthread_t s_tid_dispatch;
 static int s_started = 0;
 
-static int s_fdDebug = -1;
-static int s_fdDebug_socket2 = -1;
+//static int s_fdDebug = -1;
+//static int s_fdDebug_socket2 = -1;
 static int s_cpCrashed = 0;
-
-
-static int s_fdDebug = -1;
-static int s_fdDebug_socket2 = -1;
 
 static int s_fdWakeupRead;
 static int s_fdWakeupWrite;
