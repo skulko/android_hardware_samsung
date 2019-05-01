@@ -57,7 +57,7 @@ Return<bool> TouchscreenGesture::setGestureEnabled(
     std::fstream file(kGeasturePath);
     int gestureMode;
     int mask = 1 << gesture.id;
-
+    
     file >> gestureMode;
 
     if (enabled)
