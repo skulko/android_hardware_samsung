@@ -91,6 +91,7 @@ static int ril_connect_if_required(struct ril_handle *ril)
               strerror(errno));
         return -1;
     }
+    ril->client = NULL;
 
     return 0;
 }
